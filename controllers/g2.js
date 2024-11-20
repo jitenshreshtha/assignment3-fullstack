@@ -5,10 +5,11 @@ module.exports.g2Controller = async(req,res) =>{
     try {
         const user = await User.findById(req.session.user_id);
         const today = new Date().toISOString().split('T')[0];
+        
         const appointments = await Appointment.find({
-            date: today,
+            date: { $gte: today },
             isTimeSlotAvailable: true
-        });
+        }).sort({ date: 1, time: 1 });
         
         res.render('pages/g2', { 
             user,

@@ -28,17 +28,17 @@
                 <div class="form-group mt-3">
                     <label>Select Time Slot:</label>
                     <div class="btn-group-vertical w-100">
-                        <% timeSlots.forEach(time => { %>
-                            <% const isDisabled = appointments.some(app => 
-                                app.time === time && 
-                                app.date.toISOString().split('T')[0] === selectedDate
-                            ); %>
+                        <% timeSlots.forEach(slot => { %>
                             <button type="submit" 
                                     name="time" 
-                                    value="<%= time %>" 
-                                    class="btn btn-outline-primary mb-2"
-                                    <%= isDisabled ? 'disabled' : '' %>>
-                                <%= time %> <%= isDisabled ? '(Booked)' : '' %>
+                                    value="<%= slot.time %>" 
+                                    class="btn <%= slot.isAvailable ? 'btn-outline-primary' : 'btn-secondary' %> mb-2"
+                                    <%= !slot.isAvailable ? 'disabled' : '' %>
+                                    title="<%= slot.isAvailable ? 'Click to create appointment' : 'Time slot already booked' %>">
+                                <%= slot.time %> 
+                                <% if (!slot.isAvailable) { %>
+                                    <i class="fas fa-lock"></i> (Booked)
+                                <% } %>
                             </button>
                         <% }) %>
                     </div>
