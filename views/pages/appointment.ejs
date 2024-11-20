@@ -1,0 +1,82 @@
+<%- include('../layouts/header') %>
+
+<div class="container mt-4">
+    <h2>Manage Appointment Slots</h2>
+    
+    <% if (typeof message !== 'undefined' && message) { %>
+        <div class="alert alert-info">
+            <%= message %>
+        </div>
+    <% } %>
+
+    <!-- Appointment Creation Form -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4>Create New Appointment Slot</h4>
+            <form action="/appointment/create" method="POST" id="appointmentForm">
+                <div class="form-group">
+                    <label for="date">Date:</label>
+                    <input type="date" 
+                           class="form-control" 
+                           id="date" 
+                           name="date" 
+                           value="<%= selectedDate %>"
+                           min="<%= selectedDate %>"
+                           required>
+                </div>
+                
+                <div class="form-group mt-3">
+                    <label>Select Time Slot:</label>
+                    <div class="btn-group-vertical w-100">
+                        <% timeSlots.forEach(time => { %>
+                            <% const isDisabled = appointments.some(app => 
+                                app.time === time && 
+                                app.date.toISOString().split('T')[0] === selectedDate
+                            ); %>
+                            <button type="submit" 
+                                    name="time" 
+                                    value="<%= time %>" 
+                                    class="btn btn-outline-primary mb-2"
+                                    <%= isDisabled ? 'disabled' : '' %>>
+                                <%= time %> <%= isDisabled ? '(Booked)' : '' %>
+                            </button>
+                        <% }) %>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Existing Appointments Display -->
+    <div class="card">
+        <div class="card-body">
+            <h4>Existing Appointment Slots</h4>
+            <% if (appointments && appointments.length > 0) { %>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% appointments.forEach(appointment => { %>
+                            <tr>
+                                <td><%= appointment.date.toLocaleDateString() %></td>
+                                <td><%= appointment.time %></td>
+                                <td>
+                                    <%= appointment.isTimeSlotAvailable ? 'Available' : 'Booked' %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>No appointment slots available.</p>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include('../layouts/footer') %>

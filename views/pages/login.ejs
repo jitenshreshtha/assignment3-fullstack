@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <style>
+      .mainContainer {
+        display: flex;
+      }
+      .login-container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        height: 60vh;
+        margin: 1.5rem auto;
+      }
+      .sign-container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        height: 60vh;
+        margin: 1.5rem auto;
+      }
+      .login-container h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .sign-container h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .login-container label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+      }
+      .sign-container label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+      }
+      .login-container input[type="text"],
+      .login-container input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .sign-container input[type="text"],
+      .sign-container input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .sign-container select{
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .login-container button {
+        width: 100%;
+        padding: 10px;
+        background-color: rgb(95, 88, 88);
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      .login-container button:hover {
+        background-color: white;
+        color: rgb(95, 88, 88);
+      }
+      .sign-container button {
+        width: 100%;
+        padding: 10px;
+        background-color: rgb(95, 88, 88);
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      .sign-container button:hover {
+        background-color: white;
+        color: rgb(95, 88, 88);
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('../layouts/header');%>
+    <div class="mainContainer">
+      <div class="login-container">
+        <h2>Login</h2>
+        <form action="/loginPost" method="POST">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required />
+
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+
+          <button type="submit">Login</button>
+        </form>
+      </div>
+
+      <div class="sign-container">
+        <h2>SignUp</h2>
+        <form action="/signup" method="POST">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required />
+
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+
+          <label for="password">Confirm Password</label>
+          <input
+            type="password"
+            id="password"
+            name="confirmpassword"
+            required
+          />
+
+          <label for="usertype">User Type:</label>
+          <select id="usertype" name="usertype">
+              <option value="Driver">Driver</option>
+            <option value="Examiner">Examiner</option>
+            <option value="Admin">Admin</option>
+             
+          </select>
+
+          <button type="submit">Sign up</button>
+        </form>
+      </div>
+    </div>
+    <%- include('../layouts/footer')%>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>License</title>
+<style>
+  .mainContainer{
+    height: 80vh;
+    text-align: center;
+    background: rgb(95, 88, 88);
+    color: white;
+  }
+  .mainContainer h3{
+    margin-top: 5rem;
+  }
+  .middleContent{
+    font-size: 1.5rem;
+    letter-spacing: .5rem;
+    word-spacing: .7rem;
+    margin-top: 5rem;
+  }
+  .secondPara{
+    font-size: 1.1rem;
+    letter-spacing: .3rem;
+    word-spacing: .5rem;
+    margin-top: 5rem;
+  }
+  .admin-links {
+    margin-top: 2rem;
+  }
+  .admin-links a {
+    color: white;
+    text-decoration: underline;
+    font-size: 1.2rem;
+  }
+</style>
+    
+  </head>
+  <body>
+    <header>
+      <%- include('../layouts/header');%> 
+    </header>
+    <main class="mainContainer">
+      <h3>Dashboard</h3>
+      <p class="middleContent">Experience the world class booking and test centre with us.</p>
+      <p class="secondPara">Click the above links to login or navigate through pages.</p>
+    </main>
+    
+    <footer>
+      <%- include('../layouts/footer')%>
+    </footer>
+  </body>
+</html>
