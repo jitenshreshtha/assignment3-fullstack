@@ -18,6 +18,7 @@ module.exports.g2Post = async(req,res)=>{
             cardetails
         });
 
+        console.log(appointmentDate,appointmentTime);
         // If appointment is selected, book it
         if (appointmentDate && appointmentTime) {
             const appointment = await Appointment.findOne({

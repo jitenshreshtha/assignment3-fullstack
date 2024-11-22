@@ -2,8 +2,8 @@
 
 <div class="container mt-4">
     <h2>Manage Appointment Slots</h2>
-    
-    <% if (typeof message !== 'undefined' && message) { %>
+
+    <% if (message) { %>
         <div class="alert alert-info">
             <%= message %>
         </div>
@@ -16,26 +16,19 @@
             <form action="/appointment/create" method="POST" id="appointmentForm">
                 <div class="form-group">
                     <label for="date">Date:</label>
-                    <input type="date" 
-                           class="form-control" 
-                           id="date" 
-                           name="date" 
-                           value="<%= selectedDate %>"
-                           min="<%= selectedDate %>"
-                           required>
+                    <input type="date" class="form-control" id="date" name="date"
+                        value="<%= selectedDate %>" required>
                 </div>
-                
+
                 <div class="form-group mt-3">
                     <label>Select Time Slot:</label>
                     <div class="btn-group-vertical w-100">
                         <% timeSlots.forEach(slot => { %>
-                            <button type="submit" 
-                                    name="time" 
-                                    value="<%= slot.time %>" 
-                                    class="btn <%= slot.isAvailable ? 'btn-outline-primary' : 'btn-secondary' %> mb-2"
-                                    <%= !slot.isAvailable ? 'disabled' : '' %>
-                                    title="<%= slot.isAvailable ? 'Click to create appointment' : 'Time slot already booked' %>">
-                                <%= slot.time %> 
+                            <button type="button" data-time="<%= slot.time %>"
+                                class="btn <%= slot.isAvailable ? 'btn-outline-primary' : 'btn-secondary' %> mb-2 time-slot-btn"
+                                <%= !slot.isAvailable ? 'disabled' : '' %>
+                                title="<%= slot.isAvailable ? 'Click to select time' : 'Time slot already booked' %>">
+                                <%= slot.time %>
                                 <% if (!slot.isAvailable) { %>
                                     <i class="fas fa-lock"></i> (Booked)
                                 <% } %>
@@ -43,6 +36,11 @@
                         <% }) %>
                     </div>
                 </div>
+
+                <!-- Hidden fields to store selected date and time -->
+                <input type="hidden" id="selectedTime" name="time" required>
+                <input type="hidden" id="selectedDate" name="selectedDate" required>
+                <button type="submit" class="btn btn-success mt-3" id="saveButton" disabled>Save Appointment</button>
             </form>
         </div>
     </div>
@@ -51,7 +49,7 @@
     <div class="card">
         <div class="card-body">
             <h4>Existing Appointment Slots</h4>
-            <% if (appointments && appointments.length > 0) { %>
+            <% if (allAppointments && allAppointments.length > 0) { %>
                 <table class="table">
                     <thead>
                         <tr>
@@ -61,22 +59,128 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% appointments.forEach(appointment => { %>
-                            <tr>
-                                <td><%= appointment.date.toLocaleDateString() %></td>
+                        <% allAppointments.forEach(appointment => { %>
+                            <tr data-date="<%= new Date(appointment.date).toISOString().split('T')[0] %>" data-time="<%= appointment.time %>" class="appointment-row">
+                                <td><%= new Date(appointment.date.getTime() + (24 * 60 * 60 * 1000)).toLocaleDateString() %></td>
                                 <td><%= appointment.time %></td>
-                                <td>
-                                    <%= appointment.isTimeSlotAvailable ? 'Available' : 'Booked' %>
-                                </td>
+                                <td><%= appointment.isTimeSlotAvailable ? 'Available' : 'Booked' %></td>
                             </tr>
                         <% }) %>
                     </tbody>
                 </table>
             <% } else { %>
-                <p>No appointment slots available.</p>
+                <p>No appointments available.</p>
             <% } %>
         </div>
     </div>
 </div>
 
 <%- include('../layouts/footer') %>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const dateInput = document.getElementById('date');
+        const saveButton = document.getElementById('saveButton');
+        const selectedTimeInput = document.getElementById('selectedTime');
+        const selectedDateInput = document.getElementById('selectedDate');
+        const appointmentForm = document.getElementById('appointmentForm');
+
+        // Gather appointment data from the rendered table
+        const appointmentsData = [];
+        document.querySelectorAll('.appointment-row').forEach(row => {
+            const date = row.getAttribute('data-date');
+            const time = row.getAttribute('data-time');
+            const isBooked = row.querySelector('td:last-child').textContent.trim() === 'Booked';
+
+            if (!appointmentsData[date]) {
+                appointmentsData[date] = [];
+            }
+
+            appointmentsData[date].push({ time, isBooked });
+        });
+
+        // Reset all time slot buttons to initial state
+        const resetTimeSlots = () => {
+            document.querySelectorAll('.time-slot-btn').forEach(button => {
+                button.disabled = false;
+                button.classList.remove('btn-primary', 'btn-secondary');
+                button.classList.add('btn-outline-primary');
+                button.title = 'Click to select time';
+            });
+        };
+
+        // Function to update the slot availability based on selected date
+        const updateSlotAvailability = (selectedDate) => {
+            const availableSlots = appointmentsData[selectedDate] || [];
+
+            document.querySelectorAll('.time-slot-btn').forEach(button => {
+                const time = button.getAttribute('data-time');
+
+                const isBooked = availableSlots.some(slot => slot.time === time && slot.isBooked);
+
+                if (isBooked) {
+                    button.disabled = true;
+                    button.classList.remove('btn-outline-primary');
+                    button.classList.add('btn-secondary');
+                    button.title = 'Time slot already booked';
+                } else {
+                    button.disabled = false;
+                    button.classList.remove('btn-secondary');
+                    button.classList.add('btn-outline-primary');
+                    button.title = 'Click to select time';
+                }
+            });
+        };
+
+        // Reset time slots and update availability when the date changes
+        dateInput.addEventListener('change', () => {
+            const selectedDate = dateInput.value; // Get the new selected date
+
+            resetTimeSlots(); // Reset all buttons to the default state
+            updateSlotAvailability(selectedDate); // Update the availability for the selected date
+
+            selectedTimeInput.value = ''; // Clear the selected time
+            selectedDateInput.value = selectedDate; // Store selected date in hidden field
+            validateForm(); // Validate the form to check if both date and time are selected
+        });
+
+        // Ensure Save button is disabled until both date and time are selected
+        const validateForm = () => {
+            const selectedDate = dateInput.value;
+            const selectedTime = selectedTimeInput.value;
+            saveButton.disabled = !(selectedDate && selectedTime);
+        };
+
+        // Event listener for time button clicks
+        document.querySelectorAll('.time-slot-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                if (button.disabled) return;
+
+                const selectedTime = button.getAttribute('data-time');
+                selectedTimeInput.value = selectedTime;
+
+                document.querySelectorAll('.time-slot-btn').forEach(btn => {
+                    btn.classList.remove('btn-primary');
+                    if (!btn.disabled) {
+                        btn.classList.add('btn-outline-primary');
+                    }
+                });
+
+                button.classList.remove('btn-outline-primary');
+                button.classList.add('btn-primary');
+
+                validateForm();
+            });
+        });
+
+        // Prevent submission if form is invalid
+        appointmentForm.addEventListener('submit', (e) => {
+            if (saveButton.disabled) {
+                e.preventDefault();
+                alert('Please select both a date and a time.');
+            }
+        });
+
+        validateForm();
+    });
+</script>
