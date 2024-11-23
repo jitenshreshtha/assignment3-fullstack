@@ -134,14 +134,14 @@
 
         // Reset time slots and update availability when the date changes
         dateInput.addEventListener('change', () => {
-            const selectedDate = dateInput.value; // Get the new selected date
+            const selectedDate = dateInput.value; 
 
-            resetTimeSlots(); // Reset all buttons to the default state
-            updateSlotAvailability(selectedDate); // Update the availability for the selected date
+            resetTimeSlots(); 
+            updateSlotAvailability(selectedDate); 
 
-            selectedTimeInput.value = ''; // Clear the selected time
-            selectedDateInput.value = selectedDate; // Store selected date in hidden field
-            validateForm(); // Validate the form to check if both date and time are selected
+            selectedTimeInput.value = ''; 
+            selectedDateInput.value = selectedDate; 
+            validateForm();
         });
 
         // Ensure Save button is disabled until both date and time are selected

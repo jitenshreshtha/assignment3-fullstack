@@ -230,7 +230,7 @@
       // Handle selection of a time slot
       document.querySelectorAll('.select-slot-btn').forEach(button => {
         button.addEventListener('click', function (e) {
-          e.preventDefault(); // Prevent form submission
+          e.preventDefault(); 
     
           // Mark this button as selected
           document.querySelectorAll('.select-slot-btn').forEach(btn => btn.classList.remove('selected'));
