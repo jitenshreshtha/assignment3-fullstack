@@ -83,6 +83,41 @@
           </div>
         </div>
       <% } %>
+      <h3>Book Appointment</h3>
+
+  <!-- Existing Appointments Display -->
+  <div class="card">
+    <div class="card-body">
+        <h4>Existing Appointment Slots</h4>
+        <% if (appointments && appointments.length > 0) { %>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% appointments.forEach(appointment => { %>
+                        <tr data-date="<%= new Date(appointment.date).toISOString().split('T')[0] %>" data-time="<%= appointment.time %>" class="appointment-row">
+                            <td><%= new Date(appointment.date.getTime() + (24 * 60 * 60 * 1000)).toLocaleDateString() %></td>
+                            <td><%= appointment.time %></td>
+                            <td><%= appointment.isTimeSlotAvailable ? 'Available' : 'Booked' %></td>
+                            <td><button>Select</button></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>No appointments available.</p>
+        <% } %>
+    </div>
+</div>
+
+        <input type="hidden" id="selectedDate" name="appointmentDate" />
+        <input type="hidden" id="selectedTime" name="appointmentTime" />
+        <button type="submit">Submit</button>
     </div>
     <%- include('../layouts/footer')%>
   </body>

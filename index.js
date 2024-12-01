@@ -15,8 +15,10 @@ const { gupdate } = require("./controllers/gUpdate.js");
 const { signup } = require("./controllers/signup.js");
 const { loginPost } = require("./controllers/loginPost.js");
 const { logout } = require('./controllers/logout.js');
+const { examiner } = require('./controllers/examiner.js');
 const { appointmentController, createAppointment } = require('./controllers/appointment.js');
 const { authenticateDriver, authenticateAdmin } = require('./middleware/authMiddleware.js');
+const { authenticateExaminer } = require('./middleware/authenticateExaminer.js');
 
 const app = express();
 
@@ -32,19 +34,19 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
-    session({
-      secret: "yourSecretKey", 
-      resave: false,
-      saveUninitialized: true,
-      cookie: { secure: false }, 
-    })
+  session({
+    secret: "yourSecretKey",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
 );
 
 app.use((req, res, next) => {
-    res.locals.user_id = req.session.user_id;
-    res.locals.usertype = req.session.usertype;
-    res.locals.username = req.session.username;
-    next();
+  res.locals.user_id = req.session.user_id;
+  res.locals.usertype = req.session.usertype;
+  res.locals.username = req.session.username;
+  next();
 });
 
 // connecting to database
@@ -68,6 +70,7 @@ app.post("/g/update/:license", authenticateDriver, gupdate);
 app.post("/signup", signup);
 app.post("/loginPost", loginPost);
 app.get('/logout', logout);
+app.get('/examiner',authenticateExaminer, examiner);
 app.get("*", (req, res) => {
   res.send("Page is not found");
 });

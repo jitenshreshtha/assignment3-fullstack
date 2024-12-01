@@ -54,6 +54,10 @@
                         <a href="/appointment">View Appointments</a>
 
                         <% } %>
+                        <% if(locals.usertype==='Examiner') {%>
+                                <a href="/examiner">Examiner</a>
+
+                            <% } %>
                             <% if (!locals.user_id) { %>
                                 <a href="/login">Login</a>
                                 <% } else { %>

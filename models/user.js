@@ -13,6 +13,14 @@ const userSchema = new mongoose.Schema({
     enum: ["Driver", "Examiner", "Admin"],
     default: "Driver",
   },
+  testtype: {
+    type: String,
+    enum: ["G", "G2"],
+    default: null
+  },
+  status: { type: String, default: "pending" },
+  comment: { type: String, default: "" },
+  isPassed: { type: Boolean, default: false },
   cardetails: {
     make: { type: String, required: true, default: "" },
     model: { type: String, required: true, default: "" },
@@ -21,9 +29,11 @@ const userSchema = new mongoose.Schema({
   },
   appointmentId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Appointment'
-  }
+    ref: "Appointment",
+  },
 });
 
-const User = new mongoose.model("User", userSchema);
+// Check if the model already exists before creating it
+const User = mongoose.models.User || mongoose.model("User", userSchema);
+
 module.exports = User;

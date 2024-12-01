@@ -1,0 +1,43 @@
+<%- include('../layouts/header'); %>
+
+<body>
+    <h1>Examiner Dashboard</h1>
+    
+    <form method="GET" action="/examiner">
+      <label for="testtype">Filter by Test Type:</label>
+      <select name="testtype" id="testtype">
+        <option value="all" <%= testtype === "all" ? "selected" : "" %>>All</option>
+        <option value="G" <%= testtype === "G" ? "selected" : "" %>>G</option>
+        <option value="G2" <%= testtype === "G2" ? "selected" : "" %>>G2</option>
+      </select>
+      <button type="submit">Filter</button>
+    </form>
+  
+    <table>
+      <thead>
+        <tr>
+          <th>Driver Name</th>
+          <th>Test Type</th>
+          <th>Appointment Date</th>
+          <th>Car Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (appointments.length > 0) { %>
+          <% appointments.forEach(appointment => { %>
+            <tr>
+              <td><%= appointment.username %></td>
+              <td><%= appointment.testtype %></td>
+              <td><%= new Date(appointment.appointmentDate).toLocaleString() %></td>
+              <td><%= appointment.carDetails %></td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr>
+            <td colspan="4">No appointments found.</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </body>
+<%- include('../layouts/footer'); %>
