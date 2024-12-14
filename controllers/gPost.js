@@ -1,26 +1,15 @@
 const User = require('../models/user');
 const Appointment = require('../models/appointment');
-const bcrypt = require('bcrypt');
 
-module.exports.g2Post = async (req, res) => {
+module.exports.gPost = async (req, res) => {
     try {
-        const { firstname, lastname, license, age, dob, cardetails, appointmentDate, appointmentTime, testtype } = req.body;
+        const { appointmentDate, appointmentTime, testtype } = req.body; // Destructure the testtype
 
-        // Encrypt license number
-        const encryptedLicense = await bcrypt.hash(license, 10);
 
         // Update user information
         const updatedUser = await User.findByIdAndUpdate(req.session.user_id, {
-            firstname,
-            lastname,
-            license: encryptedLicense,
-            age,
-            dob,
-            cardetails,
             testtype
         });
-
-        console.log(appointmentDate, appointmentTime, testtype);
 
         // If appointment is selected, book it
         if (appointmentDate && appointmentTime) {
@@ -31,20 +20,24 @@ module.exports.g2Post = async (req, res) => {
             });
 
             if (appointment) {
-                appointment.isTimeSlotAvailable = false;
-                appointment.userId = req.session.user_id;
+                appointment.isTimeSlotAvailable = false; // Mark the time slot as booked
+                appointment.userId = req.session.user_id; // Assign the user to the appointment
                 await appointment.save();
 
                 // Update user with appointment reference
                 updatedUser.appointmentId = appointment._id;
                 await updatedUser.save();
-            }
-        }
 
-        res.redirect('/g2');
+
+                res.redirect('/g'); // Redirect to a success page or back to the G page
+            } else {
+                res.redirect('/g'); // Redirect back if appointment is not available
+            }
+        } else {
+            res.redirect('/g'); // Redirect back if no appointment is selected
+        }
+    } catch (err) {
+        console.log("Error in gPost:", err);
+        res.redirect('/g'); // Redirect back on error
     }
-    catch (err) {
-        console.log("error in g2post :", err);
-        res.status(500).send("Error processing your request");
-    }
-}
+};

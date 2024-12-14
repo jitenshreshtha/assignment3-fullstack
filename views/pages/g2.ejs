@@ -1,217 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>G2 page</title>
-    <style>
-      .form-container {
-        background-color: #fff;
-        padding: 30px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: 400px;
-        margin: 1.5rem auto;
-      }
-      .form-container h2 {
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      .form-container label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: bold;
-      }
-      .form-container input[type="text"],
-      .form-container input[type="number"],
-      .form-container input[type="date"] {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-      }
-      .form-container button {
-        width: 100%;
-        padding: 12px;
-        background-color: rgb(95, 88, 88);
-        border: none;
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
-        border-radius: 4px;
-      }
-      .form-container button:hover {
-        background-color: white;
-        color: rgb(95, 88, 88);
-      }
-      .appointment-slots {
-        margin-top: 20px;
-      }
-      .time-slot {
-        margin: 5px;
-        padding: 10px;
-        background-color: #f0f0f0;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      .time-slot.selected {
-        background-color: #4CAF50;
-        color: white;
-      }
-      .time-slots-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 10px;
-        margin-top: 15px;
-      }
-      .no-slots-message {
-        text-align: center;
-        padding: 20px;
-        background-color: #f8f9fa;
-        border-radius: 4px;
-        color: #6c757d;
-      }
-      .calendar-container {
-        background-color: #f8f9fa;
-        padding: 15px;
-        border-radius: 4px;
-        margin-bottom: 20px;
-      }
-      .appointment-section {
-        margin-top: 30px;
-        padding: 20px;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      }
-    </style>
-  </head>
-  <body>
-    <%- include('../layouts/header');%>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>G2 page</title>
+  <style>
+    .form-container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      margin: 1.5rem auto;
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-container label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .form-container input[type="text"],
+    .form-container input[type="number"],
+    .form-container input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .form-container button {
+      width: 100%;
+      padding: 12px;
+      background-color: rgb(95, 88, 88);
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .form-container button:hover {
+      background-color: white;
+      color: rgb(95, 88, 88);
+    }
+
+    .appointment-slots {
+      margin-top: 20px;
+    }
+
+    .time-slot {
+      margin: 5px;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .time-slot.selected {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .time-slots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .no-slots-message {
+      text-align: center;
+      padding: 20px;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+      color: #6c757d;
+    }
+
+    .calendar-container {
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+
+    .appointment-section {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body>
+  <%- include('../layouts/header');%>
     <div class="form-container">
       <h2>G2 Information Form</h2>
       <form action="/g2Post" method="POST">
         <label for="firstname">First Name</label>
-        <input
-          type="text"
-          id="firstname"
-          name="firstname"
-          value="<%= user ? user.firstname : '' %>"
-          required
-        />
+        <input type="text" id="firstname" name="firstname" value="<%= user ? user.firstname : '' %>" required />
 
         <label for="lastname">Last Name</label>
-        <input
-          type="text"
-          id="lastname"
-          name="lastname"
-          value="<%= user ? user.lastname : '' %>"
-          required
-        />
+        <input type="text" id="lastname" name="lastname" value="<%= user ? user.lastname : '' %>" required />
 
-    
+
 
         <label for="age">Age</label>
-        <input
-          type="number"
-          id="age"
-          name="age"
-          min="16"
-          value="<%= user ? user.age : '' %>"
-          required
-        />
+        <input type="number" id="age" name="age" min="16" value="<%= user ? user.age : '' %>" required />
         <label for="license">License Number</label>
-        <input
-          type="text"
-          id="license"
-          name="license"
-          value="<%= user ? user.license : '' %>"
-          required
-        />
+        <input type="text" id="license" name="license" value="<%= user ? user.license : '' %>" required />
 
         <label for="dob">Date of Birth</label>
-        <input
-          type="date"
-          id="dob"
-          name="dob"
-          value="<%= user ? user.dob : '' %>"
-          required
-        />
+        <input type="date" id="dob" name="dob" value="<%= user ? user.dob : '' %>" required />
 
         <h3>Car Information</h3>
 
         <label for="make">Make</label>
-        <input
-          type="text"
-          id="make"
-          name="cardetails[make]"
-          value="<%= user && user.cardetails ? user.cardetails.make : '' %>"
-          required
-        />
+        <input type="text" id="make" name="cardetails[make]"
+          value="<%= user && user.cardetails ? user.cardetails.make : '' %>" required />
 
         <label for="model">Model</label>
-        <input
-          type="text"
-          id="model"
-          name="cardetails[model]"
-          value="<%= user && user.cardetails ? user.cardetails.model : '' %>"
-          required
-        />
+        <input type="text" id="model" name="cardetails[model]"
+          value="<%= user && user.cardetails ? user.cardetails.model : '' %>" required />
 
         <label for="year">Year</label>
-        <input
-          type="number"
-          id="year"
-          name="cardetails[year]"
-          min="1900"
-          max="2099"
-          value="<%= user && user.cardetails ? user.cardetails.year : '' %>"
-          required
-        />
+        <input type="number" id="year" name="cardetails[year]" min="1900" max="2099"
+          value="<%= user && user.cardetails ? user.cardetails.year : '' %>" required />
 
         <label for="plate">Plate Number</label>
-        <input
-          type="text"
-          id="plate"
-          name="cardetails[plate]"
-          value="<%= user && user.cardetails ? user.cardetails.plate : '' %>"
-          required
-        />
+        <input type="text" id="plate" name="cardetails[plate]"
+          value="<%= user && user.cardetails ? user.cardetails.plate : '' %>" required />
 
         <h3>Book Appointment</h3>
 
-   <!-- Existing Appointments Display -->
-   <div class="card">
-    <div class="card-body">
-        <h4>Existing Appointment Slots</h4>
-        <% if (appointments && appointments.length > 0) { %>
-            <table class="table">
+        <!-- Existing Appointments Display -->
+        <div class="card">
+          <div class="card-body">
+            <h4>Existing Appointment Slots</h4>
+            <% if (appointments && appointments.length> 0) { %>
+              <table class="table">
                 <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Status</th>
-                    </tr>
+                  <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                  </tr>
                 </thead>
                 <tbody>
-                    <% appointments.forEach(appointment => { %>
-                        <tr data-date="<%= new Date(appointment.date).toISOString().split('T')[0] %>" data-time="<%= appointment.time %>" class="appointment-row">
-                            <td><%= new Date(appointment.date.getTime() + (24 * 60 * 60 * 1000)).toLocaleDateString() %></td>
-                            <td><%= appointment.time %></td>
-                            <td><%= appointment.isTimeSlotAvailable ? 'Available' : 'Booked' %></td>
-                            <td><button>Select</button></td>
-                        </tr>
+                  <% appointments.forEach(appointment=> { %>
+                    <tr data-date="<%= new Date(appointment.date).toISOString().split('T')[0] %>"
+                      data-time="<%= appointment.time %>" class="appointment-row">
+                      <td>
+                        <%= new Date(appointment.date.getTime() + (24 * 60 * 60 * 1000)).toLocaleDateString() %>
+                      </td>
+                      <td>
+                        <%= appointment.time %>
+                      </td>
+                      <td>
+                        <%= appointment.isTimeSlotAvailable ? 'Available' : 'Booked' %>
+                      </td>
+                      <td>
+                        <button type="button" class="select-slot-btn" data-date="<%= new Date(appointment.date).toISOString().split('T')[0] %>" data-time="<%= appointment.time %>">Select</button>
+                    </td>
+                    </tr>
                     <% }) %>
                 </tbody>
-            </table>
-        <% } else { %>
-            <p>No appointments available.</p>
-        <% } %>
-    </div>
-</div>
+              </table>
+              <% } else { %>
+                <p>No appointments available.</p>
+                <% } %>
+          </div>
+        </div>
 
+        
+        <input type="hidden" name="testtype" value="G2" />
         <input type="hidden" id="selectedDate" name="appointmentDate" />
         <input type="hidden" id="selectedTime" name="appointmentTime" />
         <button type="submit">Submit</button>
@@ -222,18 +194,19 @@
     <script>
       // Handle selection of a time slot
       document.querySelectorAll('.select-slot-btn').forEach(button => {
-        button.addEventListener('click', function (e) {
-          e.preventDefault(); 
-    
-          // Mark this button as selected
-          document.querySelectorAll('.select-slot-btn').forEach(btn => btn.classList.remove('selected'));
-          this.classList.add('selected');
-    
-          // Update hidden inputs with the selected date and time
-          document.getElementById('selectedDate').value = this.dataset.date;
-          document.getElementById('selectedTime').value = this.dataset.time;
-        });
+          button.addEventListener('click', function (e) {
+              e.preventDefault(); // Prevent default button behavior
+  
+              // Mark this button as selected
+              document.querySelectorAll('.select-slot-btn').forEach(btn => btn.classList.remove('selected'));
+              this.classList.add('selected');
+  
+              // Update hidden inputs with the selected date and time
+              document.getElementById('selectedDate').value = this.dataset.date;
+              document.getElementById('selectedTime').value = this.dataset.time;
+          });
       });
-    </script>
-  </body>
+  </script>
+</body>
+
 </html>

@@ -1,4 +1,4 @@
-const User = require('../models/User.js');
+const User = require('../models/user.js');
 const Appointment = require('../models/appointment.js');
 
 module.exports.g2Controller = async (req, res) => {

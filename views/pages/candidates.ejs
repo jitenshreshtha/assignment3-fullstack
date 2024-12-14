@@ -1,0 +1,30 @@
+<%- include('../layouts/header'); %>
+
+<h1>Candidates</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Test Type</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (candidates.length > 0) { %>
+      <% candidates.forEach(candidate => { %>
+        <tr>
+          <td><%= candidate.firstname %> <%= candidate.lastname %></td>
+          <td><%= candidate.testtype %></td>
+          <td><%= candidate.isPassed ? 'Pass' : 'Fail' %></td>
+        </tr>
+      <% }); %>
+    <% } else { %>
+      <tr>
+        <td colspan="3">No candidates found.</td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+
+<%- include('../layouts/footer'); %>

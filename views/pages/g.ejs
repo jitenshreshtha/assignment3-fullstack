@@ -1,53 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>G page</title>
-    <style>
-      .form-container {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: 300px;
-        height: 100%;
-        margin: 1.5rem auto;
-      }
-      .form-container h2 {
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      .form-container label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: bold;
-      }
-      .form-container input[type="text"] {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-      }
-      .form-container button {
-        width: 100%;
-        padding: 10px;
-        background-color: rgb(95, 88, 88);
-        border: none;
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
-        border-radius: 4px;
-      }
-      .form-container button:hover {
-        background-color: white;
-        color: rgb(95, 88, 88);
-      }
-    </style>
-  </head>
-  <body>
-    <%- include('../layouts/header');%>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>G page</title>
+  <style>
+    .form-container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      height: 100%;
+      margin: 1.5rem auto;
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-container label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .form-container input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .form-container button {
+      width: 100%;
+      padding: 10px;
+      background-color: rgb(95, 88, 88);
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .form-container button:hover {
+      background-color: white;
+      color: rgb(95, 88, 88);
+    }
+  </style>
+</head>
+
+<body>
+  <%- include('../layouts/header');%>
     <div class="form-container">
       <h2>G Page</h2>
       <% if (user) { %>
@@ -55,70 +62,119 @@
           <h2>User Information</h2>
           <div class="user-detail">
             <span class="user-label">First Name:</span>
-            <span class="user-value"><%= user.firstname %></span>
+            <span class="user-value">
+              <%= user.firstname %>
+            </span>
           </div>
           <div class="user-detail">
             <span class="user-label">Last Name:</span>
-            <span class="user-value"><%= user.lastname %></span>
+            <span class="user-value">
+              <%= user.lastname %>
+            </span>
           </div>
           <div class="user-detail">
             <span class="user-label">Age:</span>
-            <span class="user-value"><%= user.age %></span>
+            <span class="user-value">
+              <%= user.age %>
+            </span>
           </div>
           <div class="user-detail">
             <span class="user-label">Date of Birth:</span>
-            <span class="user-value"><%= user.dob %></span>
+            <span class="user-value">
+              <%= user.dob %>
+            </span>
           </div>
           <div class="user-detail">
             <span class="user-label">Car model:</span>
-            <span class="user-value"><%= user.cardetails.model %></span>
+            <span class="user-value">
+              <%= user.cardetails.model %>
+            </span>
           </div>
           <div class="user-detail">
             <span class="user-label">Year:</span>
-            <span class="user-value"><%= user.cardetails.year %></span>
+            <span class="user-value">
+              <%= user.cardetails.year %>
+            </span>
           </div>
           <div class="user-detail">
             <span class="user-label">Make:</span>
-            <span class="user-value"><%= user.cardetails.make %></span>
+            <span class="user-value">
+              <%= user.cardetails.make %>
+            </span>
           </div>
         </div>
-      <% } %>
-      <h3>Book Appointment</h3>
+        <% } %>
+          <h3>Book Appointment</h3>
 
-  <!-- Existing Appointments Display -->
-  <div class="card">
-    <div class="card-body">
-        <h4>Existing Appointment Slots</h4>
-        <% if (appointments && appointments.length > 0) { %>
-            <table class="table">
-                <thead>
-                    <tr>
+          <!-- Existing Appointments Display -->
+
+          <form action="/gPost" method="POST">
+            <div class="card">
+              <div class="card-body">
+                <h4>Existing Appointment Slots</h4>
+                <% if (appointments && appointments.length> 0) { %>
+                  <table class="table">
+                    <thead>
+                      <tr>
                         <th>Date</th>
                         <th>Time</th>
                         <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% appointments.forEach(appointment => { %>
-                        <tr data-date="<%= new Date(appointment.date).toISOString().split('T')[0] %>" data-time="<%= appointment.time %>" class="appointment-row">
-                            <td><%= new Date(appointment.date.getTime() + (24 * 60 * 60 * 1000)).toLocaleDateString() %></td>
-                            <td><%= appointment.time %></td>
-                            <td><%= appointment.isTimeSlotAvailable ? 'Available' : 'Booked' %></td>
-                            <td><button>Select</button></td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% appointments.forEach(appointment=> { %>
+                        <tr data-date="<%= new Date(appointment.date).toISOString().split('T')[0] %>"
+                          data-time="<%= appointment.time %>" class="appointment-row">
+                          <td>
+                            <%= new Date(appointment.date.getTime() + (24 * 60 * 60 * 1000)).toLocaleDateString() %>
+                          </td>
+                          <td>
+                            <%= appointment.time %>
+                          </td>
+                          <td>
+                            <%= appointment.isTimeSlotAvailable ? 'Available' : 'Booked' %>
+                          </td>
+                          <td>
+                            <button type="button" class="select-slot-btn"
+                              data-date="<%= new Date(appointment.date).toISOString().split('T')[0] %>"
+                              data-time="<%= appointment.time %>">Select</button>
+                          </td>
                         </tr>
-                    <% }) %>
-                </tbody>
-            </table>
-        <% } else { %>
-            <p>No appointments available.</p>
-        <% } %>
-    </div>
-</div>
+                        <% }) %>
+                    </tbody>
+                  </table>
+                  <% } else { %>
+                    <p>No appointments available.</p>
+                    <% } %>
+              </div>
 
-        <input type="hidden" id="selectedDate" name="appointmentDate" />
-        <input type="hidden" id="selectedTime" name="appointmentTime" />
-        <button type="submit">Submit</button>
+
+            </div>
+
+            <input type="hidden" name="testtype" value="G" />
+            <input type="hidden" id="selectedDate" name="appointmentDate" />
+            <input type="hidden" id="selectedTime" name="appointmentTime" />
+            <button type="submit">Submit</button>
     </div>
+    </form>
     <%- include('../layouts/footer')%>
-  </body>
+
+      <script>
+        // Handle selection of a time slot
+        document.querySelectorAll('.select-slot-btn').forEach(button => {
+          button.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Mark this button as selected
+            document.querySelectorAll('.select-slot-btn').forEach(btn => btn.classList.remove('selected'));
+            this.classList.add('selected');
+
+            // Update hidden inputs with the selected date and time
+            document.getElementById('selectedDate').value = this.dataset.date;
+            document.getElementById('selectedTime').value = this.dataset.time;
+          });
+        });
+      </script>
+</body>
+
 </html>

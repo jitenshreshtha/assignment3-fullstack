@@ -1,0 +1,9 @@
+<%- include('../layouts/header'); %>
+
+<h1>Driver Dashboard</h1>
+<p>Name: <%= driver.firstname %> <%= driver.lastname %></p>
+<p>Test Type: <%= driver.testtype %></p>
+<p>Comment: <%= driver.comment ? driver.comment : "No comment provided" %></p>
+<p>Status: <%= driver.isPassed ? "PASS" : "FAIL" %></p>
+
+<%- include('../layouts/footer'); %>

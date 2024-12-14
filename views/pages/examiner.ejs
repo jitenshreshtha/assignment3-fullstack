@@ -1,43 +1,229 @@
 <%- include('../layouts/header'); %>
+  <style>
+    .appointment-row {
+      cursor: pointer;
+      text-align: center;
+    }
 
-<body>
+    .appointment-row td {
+      padding: 10px;
+    }
+
+    #details-container {
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    #details-container table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    #details-container th,
+    td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    #details-container th {
+      background-color: #4CAF50;
+      color: white;
+      text-transform: uppercase;
+      font-size: 16px;
+    }
+
+    #details-container td {
+      background-color: #ffffff;
+      color: #333;
+      font-size: 14px;
+    }
+
+    #details-container tr:nth-child(even) td {
+      background-color: #f2f2f2;
+    }
+
+    #details-container tr:hover td {
+      background-color: #f5f5f5;
+    }
+
+    .action-form {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+    }
+
+    .action-form button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+      color: white;
+      width: auto;
+    }
+
+    .action-form .pass-btn {
+      background-color: #4CAF50;
+    }
+
+    .action-form .fail-btn {
+      background-color: #f44336;
+    }
+
+    .action-form .submit-btn {
+      background-color: #008CBA;
+    }
+
+    .action-form .pass-btn:hover {
+      background-color: #45a049;
+    }
+
+    .action-form .fail-btn:hover {
+      background-color: #e53935;
+    }
+
+    .action-form .submit-btn:hover {
+      background-color: #007bb5;
+    }
+
+    .action-form textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      resize: vertical;
+    }
+
+    .action-form div {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+  </style>
+
+  <body>
     <h1>Examiner Dashboard</h1>
-    
+
     <form method="GET" action="/examiner">
       <label for="testtype">Filter by Test Type:</label>
       <select name="testtype" id="testtype">
-        <option value="all" <%= testtype === "all" ? "selected" : "" %>>All</option>
-        <option value="G" <%= testtype === "G" ? "selected" : "" %>>G</option>
-        <option value="G2" <%= testtype === "G2" ? "selected" : "" %>>G2</option>
+        <option value="all" <%=testtype==="all" ? "selected" : "" %>>All</option>
+        <option value="G" <%=testtype==="G" ? "selected" : "" %>>G</option>
+        <option value="G2" <%=testtype==="G2" ? "selected" : "" %>>G2</option>
       </select>
       <button type="submit">Filter</button>
     </form>
-  
+
     <table>
       <thead>
         <tr>
           <th>Driver Name</th>
           <th>Test Type</th>
           <th>Appointment Date</th>
-          <th>Car Details</th>
+
         </tr>
       </thead>
       <tbody>
-        <% if (appointments.length > 0) { %>
-          <% appointments.forEach(appointment => { %>
-            <tr>
-              <td><%= appointment.username %></td>
-              <td><%= appointment.testtype %></td>
-              <td><%= new Date(appointment.appointmentDate).toLocaleString() %></td>
-              <td><%= appointment.carDetails %></td>
+        <% if (appointments.length> 0) { %>
+          <% appointments.forEach(appointment=> { %>
+            <tr class="appointment-row" data-appointment='<%= JSON.stringify(appointment) %>'>
+              <td>
+                <%= appointment.firstname %>
+              </td>
+              <td>
+                <%= appointment.testtype %>
+              </td>
+              <td>
+                <% if (appointment.appointmentId && appointment.appointmentId.date && appointment.appointmentId.time) { %>
+                  <%= new Date(appointment.appointmentId.date).toLocaleDateString('en-CA') %>
+                  <%= appointment.appointmentId.time %>
+                <% } else { %>
+                  Invalid date or time
+                <% } %>
+              </td>
             </tr>
-          <% }); %>
-        <% } else { %>
-          <tr>
-            <td colspan="4">No appointments found.</td>
-          </tr>
-        <% } %>
+            <% }); %>
+              <% } else { %>
+                <tr>
+                  <td colspan="3">No appointments found.</td>
+                </tr>
+                <% } %>
       </tbody>
     </table>
+
+    <!-- Second Table -->
+    <div id="details-container" style="display: none; margin-top: 20px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Car Details</th>
+            <th>Test Type</th>
+            <th>Action</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody id="details-body">
+          <!-- Details will be dynamically populated -->
+
+        </tbody>
+      </table>
+    </div>
+
+
+
   </body>
-<%- include('../layouts/footer'); %>
+
+  <%- include('../layouts/footer'); %>
+
+
+  <script>
+    document.querySelectorAll('.appointment-row').forEach(row => {
+      row.addEventListener('click', function () {
+        const appointment = JSON.parse(this.dataset.appointment);
+  
+        // Populate second table
+        const detailsBody = document.getElementById('details-body');
+        detailsBody.innerHTML = `
+          <tr>
+            <td>${appointment.firstname} ${appointment.lastname}</td>
+            <td>${appointment.cardetails.make} ${appointment.cardetails.model}</td>
+            <td>${appointment.testtype}</td>
+            <td>
+              <form id="examiner-form" action="/examiner/comment" method="POST" class="action-form">
+                <input type="hidden" name="driverId" value="${appointment._id}">
+                <input type="hidden" name="isPassed" id="isPassed">
+                <div>
+                  <button type="button" class="pass-btn" onclick="setPass()">Pass</button>
+                  <button type="button" class="fail-btn" onclick="setFail()">Fail</button>
+                </div>
+                <textarea name="comment" placeholder="Add comment"></textarea>
+                <button type="submit" class="submit-btn">Submit</button>
+              </form>
+            </td>
+          </tr>
+        `;
+  
+        // Show second table
+        document.getElementById('details-container').style.display = 'block';
+  
+        });
+      });
+  
+    function setPass() {
+      document.getElementById('isPassed').value = 'true';
+    }
+  
+    function setFail() {
+      document.getElementById('isPassed').value = 'false';
+    }
+  </script>

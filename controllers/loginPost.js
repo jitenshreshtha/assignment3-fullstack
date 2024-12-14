@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const User = require("../models/user");
 const express = require("express");
 const app = express();
 const bcrypt = require('bcrypt');
